@@ -1,0 +1,27 @@
+     1                                  ;
+     2                                      CYLS    EQU     0x0ff0      
+     3                                      LEDS    EQU     0x0ff1
+     4                                      VMODE   EQU     0x0ff2
+     5                                      SCRNX   EQU     0x0ff4
+     6                                      SCRNY   EQU     0x0ff6
+     7                                      VRAM    EQU     0x0ff8
+     8                                  
+     9 00000000 B013                        MOV     AL,0x13     ;ビデオモード設定   VGAグラフィックス, 320x200x8bit Color   パックドピクセル
+    10 00000002 B400                        MOV     AH,0x00     ;ビデオモード用の設定
+    11 00000004 CD10                        INT     0x10        ;ビデオモードの割込み
+    12                                  
+    13 00000006 C605F20F000008              MOV     BYTE [VMODE], 8             ;ビデオモードをメモする
+    14 0000000D 66C705F40F00004001          MOV     WORD [SCRNX], 320           ;ビデオモードのXピクセル数をメモ
+    15 00000016 66C705F60F0000C800          MOV     WORD [SCRNY], 200           ;ビデオモードのYピクセル数をメモ
+    16 0000001F C705F80F000000A000-         MOV     DWORD [VRAM], 0x00a000      ;ビデオモードが8のときにはVRAMの位置が0x00a000~になるので
+    16 00000028 00                 
+    17                                                                          ;メモように確保した[VRAM]のところにアドレスをメモ
+    18                                  
+    19                                  ;キーボードのLED状態をBIOSに教えてもらう
+    20                                  
+    21 00000029 B402                        MOV     AH, 0x02
+    22 0000002B CD16                        INT     0x16            ;keybord BIOS
+    23 0000002D A2F10F0000                  MOV     [LEDS], AL
+    24                                  fin:
+    25 00000032 F4                          HLT
+    26 00000033 EBFD                        JMP fin
