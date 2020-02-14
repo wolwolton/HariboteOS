@@ -1,7 +1,6 @@
 /* https://vanya.jp.net/os/haribote.html#hrb */
 /* https://qiita.com/pollenjp/items/8fcb9573cdf2dc6e2668 */
 OUTPUT_FORMAT("binary");
-OUTPUT_ARCH(i386)
 
 SECTIONS
 {
@@ -13,7 +12,7 @@ SECTIONS
         LONG(SIZEOF(.data))   /* 16 : .dataサイズ */
         LONG(LOADADDR(.data)) /* 20 : .dataの初期値列のファイル位置 */
         LONG(0xE9000000)      /* 24 : 0xE9000000 */
-        LONG(HelloMain - 0x20) /* 28 : エントリアドレス - 0x20 */
+        LONG(HariMain - 0x20) /* 28 : エントリアドレス - 0x20 */
         LONG(0)               /* 32 : heap領域（malloc領域）開始アドレス */
     }
 

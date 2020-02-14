@@ -1,0 +1,18 @@
+     1                                  ;thx https://qiita.com/pollenjp/items/8fcb9573cdf2dc6e2668
+     2                                  ; nasmfunc.asm
+     3                                  ; TAB=4
+     4                                  
+     5                                  section .text
+     6                                      GLOBAL  _io_hlt;
+     7                                      GLOBAL _write_mem8;
+     8                                  
+     9                                  
+    10                                  _io_hlt:        ; void io_hlt(void);
+    11 00000000 F4                          HLT
+    12 00000001 C3                          RET
+    13                                  
+    14                                  _write_mem8:
+    15 00000002 8B4C2404                    MOV     ECX, DWORD [ESP+4]
+    16 00000006 8A442408                    MOV     AL,  BYTE [ESP+8]
+    17 0000000A 8801                        MOV     BYTE [ECX], AL
+    18 0000000C C3                          RET

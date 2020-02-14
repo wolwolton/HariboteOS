@@ -1,5 +1,16 @@
-void HelloMain(void)
+extern void _io_hlt(void);
+extern void _write_mem8(int addr, int data);
+
+
+void HariMain(void)
 {
-fin:
-    goto fin;
+    int i;
+
+
+    for(i = 0xa0000; i<= 0xaffff; i++){
+        _write_mem8(i,6);
+    }
+    for(;;){
+        _io_hlt();
+    }
 }
