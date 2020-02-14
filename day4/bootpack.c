@@ -4,8 +4,26 @@ extern void io_out8(int port, int data);
 extern int io_load_eflags(void);
 extern int io_store_eflags(int eflags);
 
+#define COL8_000000		0
+#define COL8_FF0000		1
+#define COL8_00FF00		2
+#define COL8_FFFF00		3
+#define COL8_0000FF		4
+#define COL8_FF00FF		5
+#define COL8_00FFFF		6
+#define COL8_FFFFFF		7
+#define COL8_C6C6C6		8
+#define COL8_840000		9
+#define COL8_008400		10
+#define COL8_848400		11
+#define COL8_000084		12
+#define COL8_840084		13
+#define COL8_008484		14
+#define COL8_848484		15
+
 void init_palette(void);
 void set_palette(int start, int end, unsigned char *rgb);
+void boxfill8(unsigned char* vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
 
 void HariMain(void)
 {
@@ -16,9 +34,23 @@ void HariMain(void)
 
     p = (char*)0xa0000;
 
-    for(i = 0; i<= 0xffff; i++){
-        p[i] = i&0x0f;
-    }
+    int xsize = 320;
+    int ysize = 200;
+
+    boxfill8(p, xsize, COL8_0000FF, 0, 0, xsize, ysize);
+
+    boxfill8(p, xsize, COL8_FFFFFF, 0, ysize-20, xsize, ysize);
+    boxfill8(p, xsize, COL8_C6C6C6, 0, ysize-19, xsize, ysize);
+
+    boxfill8(p, xsize, COL8_000000, 3, ysize-17, 31, ysize-3);
+    boxfill8(p, xsize, COL8_FFFFFF, 3, ysize-17, 30, ysize-4);
+    boxfill8(p, xsize, COL8_C6C6C6, 4, ysize-16, 30, ysize-4);
+    
+    boxfill8(p, xsize, COL8_FFFFFF, xsize-30, ysize-18, xsize-2, ysize-3);
+    boxfill8(p, xsize, COL8_848484, xsize-30, ysize-18, xsize-3, ysize-4);
+    boxfill8(p, xsize, COL8_C6C6C6, xsize-29, ysize-17, xsize-3, ysize-4);
+
+
     for(;;){
         io_hlt();
     }
@@ -63,5 +95,15 @@ void set_palette(int start, int end, unsigned char *rgb){
     詳細は本誌p88下
     */
     io_store_eflags(eflags);    //割込み許可フラグを元に戻す
+    return;
+}
+
+void boxfill8(unsigned char* vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1){
+    int x, y;
+    for(y = y0; y <= y1; y++){
+        for(x = x0; x<=x1; x++){
+            vram[y*xsize + x] = c;
+        }
+    }
     return;
 }
