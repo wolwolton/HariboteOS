@@ -38,3 +38,44 @@
 
 参考：[https://ja.wikipedia.org/wiki/%E3%83%95%E3%83%AD%E3%83%83%E3%83%94%E3%83%BC%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF](https://ja.wikipedia.org/wiki/フロッピーディスク)
 
+### QEMUの使い方
+    ミニキャンでQEMUが扱ったが、そのときは、UEFIアプリを動かすための設定をいくつかしたと思う。
+    たしかその設定が割と細かく、少しずれるとうまく動かなかったと思う。
+    今回はそれほど細かく設定せずとも動作するようである。
+#### ドライブの設定
+    今回の自作OSはフロッピーディスクに入れるので、ドライブの設定をフロッピーディスクとする。それは簡単なオプションがあって、"-fda"で設定できる。
+#### CPUアーキテクチャの設定
+    QEMUでエミュレートするCPUのアーキテクチャを設定する。選択肢は割とあって、
+    qemu-system-aarch64       qemu-system-mips64        qemu-system-s390x
+    qemu-system-alpha         qemu-system-mips64el      qemu-system-sh4
+    qemu-system-arm           qemu-system-mipsel        qemu-system-sh4eb
+    qemu-system-cris          qemu-system-moxie         qemu-system-sparc
+    qemu-system-i386          qemu-system-nios2         qemu-system-sparc64
+    qemu-system-lm32          qemu-system-or1k          qemu-system-tricore
+    qemu-system-m68k          qemu-system-ppc           qemu-system-unicore32
+    qemu-system-microblaze    qemu-system-ppc64         qemu-system-x86_64
+    qemu-system-microblazeel  qemu-system-ppc64le       qemu-system-xtensa
+    qemu-system-mips          qemu-system-ppcemb        qemu-system-xtensaeb
+    から選ぶ。今回は"qemu-system-x86_64"を選んだがあってるかは不明
+    （⇐i386がネットでは多い）
+
+### Ubuntuでのディスクイメージの作成
+    mformat, mcopyコマンドはmtoolsの一部。mtoolsはflopydiskのimgファイルなどの
+    操作のためのツールらしい。
+    〇mformat
+    flopy disk imageを作るためのコマンドらしい。おそらく、ファイルシステム上に仮想的なflopy diskを作るイメージでいいいと思う。今回は
+        mformat -f 1440 -C -B ./build/ipl.bin -i helloos.img ::
+    とした。
+    "-f 1440"はフォーマットされたファイルの容量、すなわちflopy disk全体のファイルサイズを指定している。
+    "-C"これは「ディスクイメージを作成する」という設定(?)
+    "-B ./build/ipl.bin" "ipl.bin"の内容をboot sectorに書き込むという設定
+    "-i helloos.img" たぶん"helloos.img"という内容で保存するの意味
+    
+    〇mcopy
+    文字どおり、コピーする関数のよう…
+	mcopy ./build/helloos.sys -i helloos.img ::
+    
+    参考：https://qiita.com/pollenjp/items/8fcb9573cdf2dc6e2668
+    参考：http://takeisamemo.blogspot.com/2014/09/os30os-3-4.htmlhttp://takeisamemo.blogspot.com/2014/09/os30os-3-4.html
+    参考：https://www.gnu.org/software/mtools/manual/mtools.html
+### HRB形式
