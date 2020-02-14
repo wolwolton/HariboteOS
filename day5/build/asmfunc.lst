@@ -1,0 +1,73 @@
+     1                                  ;thx https://qiita.com/pollenjp/items/8fcb9573cdf2dc6e2668
+     2                                  ; nasmfunc.asm
+     3                                  ; TAB=4
+     4                                  
+     5                                  section .text
+     6                                      GLOBAL  io_hlt, io_cli, io_sti, io_stihlt
+     7                                      GLOBAL  io_in8, io_in16, io_in32
+     8                                      GLOBAL  io_out8, io_out16, io_out32
+     9                                      GLOBAL  io_load_eflags, io_store_eflags
+    10                                  
+    11                                  io_hlt:
+    12 00000000 F4                          HLT
+    13 00000001 C3                          RET
+    14                                  
+    15                                  io_cli:
+    16                                      CLT
+    16          ******************       warning: label alone on a line without a colon might be in error [-w+orphan-labels]
+    17 00000002 C3                          RET
+    18                                  
+    19                                  io_sti:
+    20 00000003 FB                          STI
+    21 00000004 C3                          RET
+    22                                  
+    23                                  io_stihlt:
+    24 00000005 FB                          STI
+    25 00000006 F4                          HLT
+    26 00000007 C3                          RET
+    27                                  
+    28                                  io_in8: ;int io_in8(int port)
+    29 00000008 8B542404                    MOV EDX, [ESP+4];
+    30 0000000C B800000000                  MOV EAX, 0
+    31 00000011 EC                          IN AL, DX
+    32 00000012 C3                          RET
+    33                                  
+    34                                  io_in16: ;int io_in16(int port)
+    35 00000013 8B542404                    MOV EDX, [ESP+4]
+    36 00000017 B800000000                  MOV EAX, 0
+    37 0000001C 66ED                        IN AX, DX
+    38 0000001E C3                          RET
+    39                                  
+    40                                  io_in32: ;int io_in32(int port)
+    41 0000001F 8B542404                    MOV EDX, [ESP+4]
+    42 00000023 ED                          IN EAX, DX
+    43 00000024 C3                          RET
+    44                                  
+    45                                  io_out8:
+    46 00000025 8B542404                    MOV EDX, [ESP+4]
+    47 00000029 8A442408                    MOV AL, [ESP+8]
+    48 0000002D EE                          OUT DX, AL
+    49 0000002E C3                          RET
+    50                                  
+    51                                  io_out16:
+    52 0000002F 8B542404                    MOV EDX, [ESP+4]
+    53 00000033 8B442408                    MOV EAX, [ESP+8]
+    54 00000037 66EF                        OUT DX, AX
+    55 00000039 C3                          RET
+    56                                  
+    57                                  io_out32:
+    58 0000003A 8B542404                    MOV EDX, [ESP+4]
+    59 0000003E 8B442408                    MOV EAX, [ESP+8]
+    60 00000042 EF                          OUT DX, EAX
+    61 00000043 C3                          RET
+    62                                  
+    63                                  io_load_eflags:
+    64 00000044 9C                          PUSHFD  ;   PUSH EFLAGS という意味
+    65 00000045 58                          POP EAX
+    66 00000046 C3                          RET
+    67                                  
+    68                                  io_store_eflags:
+    69 00000047 8B442404                    MOV EAX, [ESP+4]
+    70 0000004B 50                          PUSH EAX
+    71 0000004C 9D                          POPFD   ;   POP EFLAGS という意味
+    72 0000004D C3                          RET
