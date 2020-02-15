@@ -1,8 +1,11 @@
+
 extern void io_hlt(void);
 extern void io_cli(void);
 extern void io_out8(int port, int data);
 extern int io_load_eflags(void);
 extern int io_store_eflags(int eflags);
+extern char hankaku[4096];
+
 
 #define COL8_000000		0
 #define COL8_FF0000		1
@@ -25,6 +28,7 @@ void init_palette(void);
 void init_screen(unsigned char* vram, int xsize, int ysize);
 void set_palette(int start, int end, unsigned char *rgb);
 void putfont8(char* vram, int xsize, char* font, unsigned char c, int x, int y);
+void putfonts8_asc(char* vram, int xsize, char* string, char* font, unsigned char c, int x, int y);
 void boxfill8(unsigned char* vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
 
 struct BOOTINFO{
@@ -46,7 +50,12 @@ void HariMain(void)
     
     static char font_A[16] = {0x00, 0x18, 0x18, 0x18, 0x18, 0x24, 0x24, 0x24, 0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x0, 0x0};
 
-    putfont8(binfo->vram, binfo->scrnx, font_A, COL8_FFFFFF, 5, 5);
+    putfonts8_asc(binfo->vram, binfo->scrnx, "Hello World!!!", hankaku, COL8_FFFFFF, 5, 5);
+
+    char* s;
+    sprintf(s, "scrnx = %d", binfo->scrnx);
+    
+    putfonts8_asc(binfo->vram, binfo->scrnx, s, hankaku, COL8_FF00FF, 5, 20);
     
 
     for(;;){
@@ -137,4 +146,12 @@ void putfont8(char* vram, int xsize, char* font, unsigned char c, int x, int y){
         if((d & 0x01) != 0){ p[7] = c;}
     }
     return;
+}
+
+void putfonts8_asc(char* vram, int xsize, char* string, char* font, unsigned char c, int x, int y){
+    int i = 0;
+    while(string[i]!=0){
+        putfont8(vram,xsize,font+string[i]*16,c,x+i*9,y);
+        i++;
+    }
 }
