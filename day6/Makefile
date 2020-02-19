@@ -22,8 +22,8 @@ mcopy = mcopy
 	gcc -c -m32 ./build/hankaku.c -o ./build/hankaku.o
 
 #bootpack.hrb
-./build/bootpack.hrb	:hrb.ld	./build/asmfunc.o	./build/hankaku.o	./build/mysprintf.obj	bootpack.c	./build/graphic.obj	./build/dsctbl.obj	Makefile
-	$(gcc2hrb) -L ./build ./build/asmfunc.o ./build/hankaku.o ./build/mysprintf.obj ./build/graphic.obj ./build/dsctbl.obj  -o ./build/bootpack.hrb  
+./build/bootpack.hrb	:hrb.ld	./build/asmfunc.o	./build/hankaku.o	./build/mysprintf.obj	bootpack.c	./build/graphic.obj	./build/dsctbl.obj	./build/int.obj	Makefile
+	$(gcc2hrb) -L ./build ./build/asmfunc.o ./build/hankaku.o ./build/mysprintf.obj ./build/graphic.obj ./build/dsctbl.obj ./build/int.obj  -o ./build/bootpack.hrb  
 #https://hanachin.hateblo.jp/entry/2019/07/06/022100
 
 #helloos.sys
