@@ -2,16 +2,17 @@
 
 void HariMain(void)
 {
-    struct BOOTINFO *binfo;
+    struct BOOTINFO *binfo = (struct BOOTINFO *)ADR_BOOTINFO;
 
-    binfo=(struct BOOTINFO*) 0x0ff0;
+    init_gdtidt();
+    init_pic();
+    io_sti();
+	io_out8(PIC0_IMR, 0xf9); /* PIC1とキーボードを許可(11111001) */
+	io_out8(PIC1_IMR, 0xef); /* マウスを許可(11101111) */
 
     init_palette();
 
     init_screen(binfo->vram, binfo->scrnx, binfo->scrny);
-
-    
-    static char font_A[16] = {0x00, 0x18, 0x18, 0x18, 0x18, 0x24, 0x24, 0x24, 0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x0, 0x0};
 
     putfonts8_asc(binfo->vram, binfo->scrnx, "Hello World!!!", hankaku, COL8_FFFFFF, 5, 5);
 
@@ -20,7 +21,6 @@ void HariMain(void)
     
     putfonts8_asc(binfo->vram, binfo->scrnx, s, hankaku, COL8_FF00FF, 5, 20);
     
-
     for(;;){
         io_hlt();
     }
